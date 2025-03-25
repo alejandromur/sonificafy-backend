@@ -43,7 +43,7 @@ def add_reverb(audio, sample_rate=44100):
     reverb_audio = reverb_audio / np.max(np.abs(reverb_audio))
     return reverb_audio    
 
-def generate_piano_wave(frequency, duration=0.2, sample_rate=44100):
+def generate_piano_wave(frequency, duration=0.3, sample_rate=44100):
     """Genera un sonido de piano con resonancia simpática."""
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     
@@ -82,7 +82,7 @@ def generate_piano_wave(frequency, duration=0.2, sample_rate=44100):
     
     return wave * envelope
 
-def generate_wave(frequencies, duration=0.2, sample_rate=44100):
+def generate_wave(frequencies, duration=0.25, sample_rate=44100):
     """Genera una señal de audio usando sonidos de piano."""
     audio = np.array([])
     
