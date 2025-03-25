@@ -136,3 +136,8 @@ dist
 .pnp.*
 
 *.wav
+
+# Python
+venv/
+__pycache__/
+*.pyc
