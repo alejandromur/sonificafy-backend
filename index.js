@@ -15,25 +15,46 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/sonificate", async (req, res) => {
+  const LIMIT = 300;
+
+  function getSlice(string) {
+    if (string.length <= LIMIT) return string;
+
+    const indexStart = Math.ceil((string.length - LIMIT) / 2);
+    return string.slice(indexStart, indexStart + LIMIT);
+  }
+
+  function assignName(url, startTime) {
+    const originUrlName = url.substring(
+      url.indexOf("://") + 3,
+      url.indexOf(".")
+    );
+    const time = startTime.getTime();
+    return `${originUrlName}.wav`;
+    return `${originUrlName}_${time}.wav`;
+  }
+
   try {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: "An URL is required" });
 
+    const startTime = new Date();
     const response = await axios.get(url);
-    const html = response.data.slice(0, 100); // TODO: Strip the html to the first 234 characters
+    const html = getSlice(response.data);
+    console.log(response.data.length, html.length, html);
+
+    const fileName = assignName(url, startTime);
 
     fs.writeFileSync("temp.html", html);
-
-    // const pythonPath = "/usr/local/bin/python3";
 
     exec(
       `${pythonPath} ${path.join(
         __dirname,
-        "html_to_sound_piano_style.py"
+        "scripts/html_to_sound_trigrams.py"
       )} ${path.join(__dirname, "temp.html")} ${path.join(
         __dirname,
-        "output.wav"
-      )}`,
+        fileName
+      )} lofi`,
       {
         env: process.env,
         cwd: __dirname,
@@ -49,7 +70,21 @@ app.post("/api/sonificate", async (req, res) => {
         }
         console.log(`stdout: ${stdout}`);
 
-        res.json({ audioUrl: "output.wav" });
+        const metadata = {
+          audioUrl: fileName,
+          processingInfo: {
+            timestamp: startTime,
+            processingTime: `${new Date() - startTime}ms`,
+            originalUrl: url,
+            originalContentLength: response.data.length,
+            processedContentLength: html.length,
+            contentType: response.headers["content-type"],
+            statusCode: response.status,
+            fileName: fileName,
+          },
+        };
+
+        res.json(metadata);
       }
     );
   } catch (err) {
