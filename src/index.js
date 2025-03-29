@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/api/sonificate", processSonification);
+app.post("/api/sonification", processSonification);
 
 app.use(errorHandler);
 
