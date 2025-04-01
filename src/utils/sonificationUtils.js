@@ -15,7 +15,10 @@ function getSlice(string) {
 }
 
 function assignName(url, startTime) {
-  const originUrlName = url.substring(url.indexOf("://") + 3, url.indexOf("."));
+  if (!url) return null;
+
+  const originUrlName = new URL(url).hostname;
+
   const time = startTime.getTime();
   return process.env.ENVIRONMENT === "PRODUCTION"
     ? `${originUrlName}_${time}.wav`
