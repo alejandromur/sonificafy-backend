@@ -28,10 +28,7 @@ function assignName(url, startTime) {
 async function generateSoundFromHTML(htmlContent, outputFileName) {
   fs.writeFileSync("src/temp.html", htmlContent);
 
-  const scriptPath = path.join(
-    __dirname,
-    "../../scripts/john_frusciante_inspiration.py"
-  );
+  const scriptPath = path.join(__dirname, "../../scripts/didgeridoo.py");
   const outputPath = path.join(__dirname, "../../audios", outputFileName);
 
   const { stdout, stderr } = await execPromise(
