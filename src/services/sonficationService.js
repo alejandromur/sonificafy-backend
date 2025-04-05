@@ -21,9 +21,9 @@ class SonificationService {
     }
   }
 
-  async processAudio(html, fileName) {
+  async processAudio(html, scriptVariant, fileName) {
     try {
-      const result = await generateSoundFromHTML(html, fileName);
+      const result = await generateSoundFromHTML(html, scriptVariant, fileName);
       return result;
     } catch (error) {
       throw new AudioProcessingError(
